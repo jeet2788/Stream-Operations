@@ -51,6 +51,24 @@ public class AccountBalanceOps {
         List<Float> balances = extractAndCollectBalance(accList);
         System.out.println("All balances: " + balances);
 
+        List<String> accountStrings = transformAccountsToString(accList);
+        accountStrings.forEach(System.out::println);
+
+        DoubleSummaryStatistics stats = collectBalanceStatistics(accList);
+
+        System.out.println("Count: " + stats.getCount());
+        System.out.println("Sum: " + stats.getSum());
+        System.out.println("Average: " + stats.getAverage());
+        System.out.println("Max: " + stats.getMax());
+        System.out.println("Min: " + stats.getMin());
+
+        List<Account> sortedAsc = sortAccountByBalanceAscending(accList);
+        System.out.println("Ascending: " + sortedAsc);
+
+        List<Account> sortedDesc = sortAccountByBalanceDescending(accList);
+        System.out.println("Descending: " + sortedDesc);
+
+
     }
     /***************************************  Filtering and Summing ************************************ */
 
@@ -120,8 +138,36 @@ public class AccountBalanceOps {
         return accountList.stream().map(Account::getBalance).collect(Collectors.toList());
     }
 
+    /**
+     * Transform account objects into strings like "FirstName LastName: Balance".
+     */
+    private static  List<String> transformAccountsToString(List<Account> accList){
+        return accList.stream().map(e->e.getFirstName() +" "+e.getLastName() +" "+e.getBalance()).collect(Collectors.toList());
+    }
+    /**
+     * Convert balances to double and collect statistics (average, max, min, sum, count)
+     */
+    private static DoubleSummaryStatistics collectBalanceStatistics(List<Account> accountList) {
+        return accountList.stream()
+                .mapToDouble(Account::getBalance) // converts float to double automatically
+                .summaryStatistics(); // collects count, sum, min, max, average
+    }
 
+    /*************************************** Sorting *************************************************************/
 
+    /**
+     * Sort accounts by balance ascending .
+     */
+    private static  List<Account> sortAccountByBalanceAscending(List<Account> accList){
+        return accList.stream().sorted(Comparator.comparingDouble(Account::getBalance)).collect(Collectors.toList());
+    }
+
+    /**
+     * Sort accounts by balance descending.
+     */
+    private static  List<Account> sortAccountByBalanceDescending(List<Account> accList){
+        return accList.stream().sorted(Comparator.comparingDouble(Account::getBalance).reversed()).collect(Collectors.toList());
+    }
 
 }
 
