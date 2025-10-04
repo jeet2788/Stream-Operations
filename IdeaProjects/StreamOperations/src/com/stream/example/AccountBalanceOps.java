@@ -45,18 +45,15 @@ public class AccountBalanceOps {
         if(maxBalanceForGivenPerson.isPresent()){
             maxBalanceForGivenPerson.ifPresent(System.out::println);
         }
+        long count = countNumberOfAccountForAPerson(accList, "J");
+        System.out.println("Number of accounts for J: " + count);
+
+        List<Float> balances = extractAndCollectBalance(accList);
+        System.out.println("All balances: " + balances);
+
     }
-    /*
-     *  Filtering and Summing
-     */
+    /***************************************  Filtering and Summing ************************************ */
 
-
-    /**
-     * @param accList
-     * @param fName
-     * @param lName
-     * @return
-     */
     private static float totalAccBalByPerson(List<Account> accList, String fName, String lName) {
         return (float)
                 accList.stream()
@@ -65,36 +62,18 @@ public class AccountBalanceOps {
                         .sum();
     }
 
-    /**
-     * @param accList
-     * @return
-     */
     private static float  totalBalaceBelow1000(List<Account> accList){
         return (float) accList.stream().filter(e->e.getBalance()<1000).mapToDouble(Account::getBalance).sum();
     }
 
-    /**
-     * @param accList
-     * @param fName
-     * @param lName
-     * @return
-     */
     private static float sumOfBalanceByName(List<Account> accList, String fName, String lName){
         return (float) accList.stream().filter(e->e.getFirstName().startsWith("J") && e.getLastName().startsWith("J")).mapToDouble(Account::getBalance).sum();
     }
 
-    /*
-    Distinct and Grouping
-    */
-
+    /*************************************   Distinct and Grouping  *******************************************************/
 
     /**
      * List all distinct (firstName, lastName) combinations.
-     */
-
-    /**
-     * @param accList
-     * @return
      */
     private static List<Account> listDistictfNamelNameCombination(List<Account> accList){
         return accList.stream().distinct().collect(Collectors.toList());
@@ -124,6 +103,26 @@ public class AccountBalanceOps {
         return accList.stream().filter(e->e.getFirstName().equals(firstName))
                 .max(Comparator.comparingDouble(Account::getBalance));
     }
+    /**
+     * Count the number of accounts for a specific person.
+     */
+    private static long countNumberOfAccountForAPerson(List<Account> accList,String fName){
+        return accList.stream().filter(e->e.getFirstName().equals(fName)).count();
+    }
+
+    /*********************************** Mapping and Transformation *************************************************/
+
+    /**
+     * Extract and collect all account balances into a list.
+     */
+
+    private static List<Float> extractAndCollectBalance(List<Account> accountList){
+        return accountList.stream().map(Account::getBalance).collect(Collectors.toList());
+    }
+
+
+
+
 }
 
 class Account {
