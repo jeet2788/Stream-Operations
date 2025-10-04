@@ -2,10 +2,12 @@ package com.stream.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AccountBalanceOps {
+
     public static void main(String[] args) {
         Account a1 = new Account("J", "C", 90.7f);
         Account a4 = new Account("J", "C", 290.7f);
@@ -31,6 +33,16 @@ public class AccountBalanceOps {
 
         List<Account> distinctAccounts = listDistictfNamelNameCombination(accList);
         System.out.println("Distinct Accounts (by Name): " + distinctAccounts.size());
+
+        Map<String,Double> groupNameAndSum = groupAccountByfNameOrlNameAndSum(accList);
+        groupNameAndSum.forEach((firstName,totalBalance)->{
+            System.out.println("First Name: " + firstName + " => Total Balance: " + totalBalance);
+        });
+
+        Map<String,Long> groupNameAndCount = groupAccountByFirstNameAndCount(accList);
+        groupNameAndCount.forEach((firstName,count)->{
+            System.out.println("First Name :"+firstName + " "+"Count :"+count);
+        });
     }
     /*
      *  Filtering and Summing
@@ -73,13 +85,35 @@ public class AccountBalanceOps {
     Distinct and Grouping
     */
 
+
+    /**
+     * List all distinct (firstName, lastName) combinations.
+     */
+
     /**
      * @param accList
      * @return
      */
-    //List all distinct (firstName, lastName) combinations.
     private static List<Account> listDistictfNamelNameCombination(List<Account> accList){
         return accList.stream().distinct().collect(Collectors.toList());
+    }
+
+    /**
+     * Group accounts by first name or last name and calculate sum  per group.
+     */
+    private static Map<String,Double> groupAccountByfNameOrlNameAndSum(List<Account> accList) {
+        return  accList.stream().collect(Collectors.groupingBy(Account::getFirstName,
+                Collectors.summingDouble(Account::getBalance)
+        ));
+    }
+
+    /**
+     * Group accounts by first name or last name and calculate  count per group.
+     */
+    private static Map<String, Long> groupAccountByFirstNameAndCount(List<Account> accList) {
+        return accList.stream().collect(Collectors.groupingBy(Account::getFirstName,
+                Collectors.counting()
+        ));
     }
 
 }
