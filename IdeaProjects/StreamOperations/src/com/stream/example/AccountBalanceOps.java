@@ -1,9 +1,6 @@
 package com.stream.example;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AccountBalanceOps {
@@ -43,6 +40,11 @@ public class AccountBalanceOps {
         groupNameAndCount.forEach((firstName,count)->{
             System.out.println("First Name :"+firstName + " "+"Count :"+count);
         });
+
+        Optional<Account> maxBalanceForGivenPerson = maxAccountBalanceForGivenPerson(accList,"J");
+        if(maxBalanceForGivenPerson.isPresent()){
+            maxBalanceForGivenPerson.ifPresent(System.out::println);
+        }
     }
     /*
      *  Filtering and Summing
@@ -115,12 +117,28 @@ public class AccountBalanceOps {
                 Collectors.counting()
         ));
     }
-
+    /**
+     * Find an account with the maximum or minimum balance for a given person
+     */
+    private static Optional<Account> maxAccountBalanceForGivenPerson(List<Account> accList, String firstName){
+        return accList.stream().filter(e->e.getFirstName().equals(firstName))
+                .max(Comparator.comparingDouble(Account::getBalance));
+    }
 }
 
 class Account {
     private String firstName;
     private String lastName;
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
+
     private float balance;
 
     @Override
