@@ -22,7 +22,7 @@ public class AccountBalanceOps {
         float total = totalAccBalByPerson(accList, "J", "C");
         System.out.println(" Total balance for J C: " + total);
 
-        float balanceBelow1000 = totalBalaceBelow1000(accList);
+        float balanceBelow1000 = totalBalanceBelow1000(accList);
         System.out.println(" Balance Below 1000 "+balanceBelow1000);
 
         float byName = sumOfBalanceByName(accList, "J", "C");
@@ -68,10 +68,20 @@ public class AccountBalanceOps {
         List<Account> sortedDesc = sortAccountByBalanceDescending(accList);
         System.out.println("Descending: " + sortedDesc);
 
+        List<Account> sortedAccounts = sortAccountByLastNameThenFirstName(accList);
+        sortedAccounts.forEach(System.out::println);
+
 
     }
     /***************************************  Filtering and Summing ************************************ */
 
+    /**
+     *  This method returns the total account balance for  a given person
+     * @param accList
+     * @param fName
+     * @param lName
+     * @return
+     */
     private static float totalAccBalByPerson(List<Account> accList, String fName, String lName) {
         return (float)
                 accList.stream()
@@ -80,10 +90,22 @@ public class AccountBalanceOps {
                         .sum();
     }
 
-    private static float  totalBalaceBelow1000(List<Account> accList){
+    /**
+     * sum total balance and return which are less than 1000
+     * @param accList
+     * @return
+     */
+    private static float  totalBalanceBelow1000(List<Account> accList){
         return (float) accList.stream().filter(e->e.getBalance()<1000).mapToDouble(Account::getBalance).sum();
     }
 
+    /**
+     *
+     * @param accList
+     * @param fName
+     * @param lName
+     * @return
+     */
     private static float sumOfBalanceByName(List<Account> accList, String fName, String lName){
         return (float) accList.stream().filter(e->e.getFirstName().startsWith("J") && e.getLastName().startsWith("J")).mapToDouble(Account::getBalance).sum();
     }
@@ -92,6 +114,11 @@ public class AccountBalanceOps {
 
     /**
      * List all distinct (firstName, lastName) combinations.
+     */
+    /**
+     *
+     * @param accList
+     * @return
      */
     private static List<Account> listDistictfNamelNameCombination(List<Account> accList){
         return accList.stream().distinct().collect(Collectors.toList());
@@ -168,6 +195,16 @@ public class AccountBalanceOps {
     private static  List<Account> sortAccountByBalanceDescending(List<Account> accList){
         return accList.stream().sorted(Comparator.comparingDouble(Account::getBalance).reversed()).collect(Collectors.toList());
     }
+
+    /**
+     * Sort accounts by last name, then first name.
+     */
+    private static List<Account> sortAccountByLastNameThenFirstName(List<Account> accList){
+        return accList.stream().sorted(Comparator.comparing(Account::getLastName).thenComparing(Account::getFirstName))
+                .collect(Collectors.toList());
+    }
+
+    /************************************* Combining and Collecting ************************************************/
 
 }
 
