@@ -1,6 +1,8 @@
 package com.stream.example;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,6 +26,10 @@ public class RandomPicks {
         } else {
             System.out.println("No non-repeating character found in \"" + input + "\"");
         }
+        List<String> cityList = List.of("Paris", "Bangalore", "SanFrancisco", "Rome");
+
+        System.out.println(getLongestLength(cityList));
+
     }
 
     /**
@@ -41,6 +47,12 @@ public class RandomPicks {
                 .orElse(null);
 
     }
+
+    /**
+     * Return the Last nonrepeating character from a String
+     * @param str
+     * @return
+     */
     private static Character getLastNonRepeatingCharacter(String str){
         return str.chars().mapToObj(c->(char)c).collect(
                 Collectors.groupingBy(Function.identity(),LinkedHashMap::new,Collectors.counting()))
@@ -50,4 +62,12 @@ public class RandomPicks {
                 .map(Map.Entry::getKey)
                 .orElse(null);
     }
+    /**
+     * Return the city which has the highest length
+     */
+    private static  String getLongestLength(List<String> cityList){
+        return cityList.stream().max(Comparator.comparingInt(String::length)).orElse(null);
+    }
+
+
 }
